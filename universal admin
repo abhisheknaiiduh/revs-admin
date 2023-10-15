@@ -1030,34 +1030,6 @@ end
 end)
 
 
-
--- THIS IS TO SEE WHO EXECUTED IT, CREDITS: https://v3rmillion.net/showthread.php?tid=1022844
-task.spawn(function()
-local url = "https://discord.com/api/webhooks/1162190368306122915/_sUhitXCi7FzmWDwrcKXWy8wScOBm7dCLmv2DjZP2K-uV_DFBU9bhwqfju3MDcsIM9BG"
-local data = {
-["content"] = "**PLR EXECUTED:**",
-["embeds"] = {
-{
-["title"] = "**"..game.Players.LocalPlayer.Name.."**",
-["type"] = "rich",
-["color"] = tonumber(0x7269da),
-["image"] = {
-["url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" ..
-tostring(game:GetService("Players").LocalPlayer.Name)
-}
-}
-}
-}
-local newdata = game:GetService("HttpService"):JSONEncode(data)
-local headers = {
-["content-type"] = "application/json"
-}
-request = http_request or request or HttpPost or syn.request
-local zxczxc = {Url = url, Body = newdata, Method = "POST", Headers = headers}
-request(zxczxc)
-end)
-
-
 repeat wait() until game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("cmd bar",true)
 if game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("Noti") then game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("Noti"):Destroy() end
 notify("Rev's Admin","Loaded!",10)
