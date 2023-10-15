@@ -139,7 +139,7 @@ local cmdslist = {
 "carpetloopgoto (plr)",
 "uncarpetloopgoto",
 "discord",
-"flirt",
+"flirt (plr)",
 "unflirt",
 "dupetools (num)",
 "gfuck (plr)",
