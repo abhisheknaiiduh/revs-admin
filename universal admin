@@ -402,6 +402,8 @@ wait()
 workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
 clone.Parent = workspace
 plr.Character = clone
+plr.Character.Animate.Disabled = true
+plr.Character.Animate.Disabled = false
 getgenv().respawnchecker = rS.Heartbeat:Connect(function()
 if clone.Humanoid.Health <= 0 then
 orgplr.Humanoid.Health = 0
@@ -1074,6 +1076,8 @@ wait()
 workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
 clone.Parent = workspace
 plr.Character = clone
+plr.Character.Animate.Disabled = true
+plr.Character.Animate.Disabled = false
 getgenv().respawnchecker = rS.Heartbeat:Connect(function()
 if clone.Humanoid.Health <= 0 then
 orgplr.Humanoid.Health = 0
@@ -1087,6 +1091,7 @@ orgplr.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
 end)
 notify("Invis Cmd","You are now invis!",5)
 end
+
 
 if cmd == "vis" then
 if invisrun then invisrun:Disconnect() end
