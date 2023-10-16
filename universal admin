@@ -381,11 +381,12 @@ end
 
 if cmd == "droptools" then
 for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-    if tool.CanBeDropped == true then
-        tool.Parent = game.Players.LocalPlayer.Character
-        wait(0.2)
-        tool.Parent = workspace
-    end
+if tool.CanBeDropped == true then
+tool.Parent = game.Players.LocalPlayer.Character
+wait(0.2)
+tool.Parent = workspace
+end
+end
 end
 end
 
