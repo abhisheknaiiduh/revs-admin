@@ -150,6 +150,7 @@ local cmdslist = {
 "unsuck",
 "invis",
 "vis",
+"droptools",
 }
 
 local plugins = {}
@@ -376,6 +377,16 @@ else
 loadstring(readfile("Revs admin/Plugins/"..v..".lua"))()
 end
 end
+
+
+if cmd == "droptools" then
+for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+    if tool.CanBeDropped == true then
+        tool.Parent = game.Players.LocalPlayer.Character
+        wait(0.2)
+        tool.Parent = workspace
+    end
+end
 end
 
 if cmd == "invis" then
@@ -390,8 +401,6 @@ wait()
 workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
 clone.Parent = workspace
 plr.Character = clone
-clone.Animate.Disabled = true
-clone.Animate.Disabled = false
 getgenv().respawnchecker = rS.Heartbeat:Connect(function()
 if clone.Humanoid.Health <= 0 then
 orgplr.Humanoid.Health = 0
@@ -1064,8 +1073,6 @@ wait()
 workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
 clone.Parent = workspace
 plr.Character = clone
-clone.Animate.Disabled = true
-clone.Animate.Disabled = false
 getgenv().respawnchecker = rS.Heartbeat:Connect(function()
 if clone.Humanoid.Health <= 0 then
 orgplr.Humanoid.Health = 0
@@ -1089,6 +1096,16 @@ game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
 game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
 clone:Destroy()
+end
+
+if cmd == "droptools" then
+for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+    if tool.CanBeDropped == true then
+        tool.Parent = game.Players.LocalPlayer.Character
+        wait(0.2)
+        tool.Parent = workspace
+    end
+end
 end
 
 end
