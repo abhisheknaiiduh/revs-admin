@@ -1,5 +1,25 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/jj123llol/My-personal-admin/main/z",true))()
 
+
+--[[
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+if you use any of this shit give credits!!!!
+--]]
+
+
 --1st open source project is crazy
 
 if getgenv().executed == true then warn("\nadmin is already running\nadmin is already running\nadmin is already running\nadmin is already running") return end
