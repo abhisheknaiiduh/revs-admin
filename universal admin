@@ -9,8 +9,8 @@ getgenv().executed = true
 if game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("ChatScript",true) then
 local ChatMain = require(game:GetService("Players").LocalPlayer.PlayerScripts.ChatScript.ChatMain)
 local function bypass()
-ChatMain.MessagePosted:fire("dffhdfshfd"..math.random(100000,1000000))
-ChatMain.MessagesChanged:fire(math.random(100000,1000000))
+ChatMain.MessagePosted:fire("dffhdfshfdfdfdfdfdf"..math.random(9e9,9e9))
+ChatMain.MessagesChanged:fire(math.random(9e9,9e9))
 end
 end
 
@@ -148,6 +148,8 @@ local cmdslist = {
 "ungfuck",
 "suck (plr)",
 "unsuck",
+"invis",
+"vis",
 }
 
 local plugins = {}
