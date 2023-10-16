@@ -1,4 +1,5 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/jj123llol/My-personal-admin/main/z",true))()
+
 --1st open source project is crazy
 
 if getgenv().executed == true then warn("\nadmin is already running\nadmin is already running\nadmin is already running\nadmin is already running") return end
@@ -8,8 +9,8 @@ getgenv().executed = true
 if game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("ChatScript",true) then
 local ChatMain = require(game:GetService("Players").LocalPlayer.PlayerScripts.ChatScript.ChatMain)
 local function bypass()
-ChatMain.MessagePosted:fire("dffhdfshfd"..math.random(100000,1000000))
-ChatMain.MessagesChanged:fire(math.random(100000,1000000))
+ChatMain.MessagePosted:fire("dffhdfshfddfghj"..math.random(9e9,9e9))
+ChatMain.MessagesChanged:fire(math.random(9e9,9e9))
 end
 end
 
