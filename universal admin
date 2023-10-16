@@ -390,6 +390,8 @@ wait()
 workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
 clone.Parent = workspace
 plr.Character = clone
+clone.Animate.Disabled = true
+clone.Animate.Disabled = false
 getgenv().respawnchecker = rS.Heartbeat:Connect(function()
 if clone.Humanoid.Health <= 0 then
 orgplr.Humanoid.Health = 0
@@ -1062,6 +1064,8 @@ wait()
 workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
 clone.Parent = workspace
 plr.Character = clone
+clone.Animate.Disabled = true
+clone.Animate.Disabled = false
 getgenv().respawnchecker = rS.Heartbeat:Connect(function()
 if clone.Humanoid.Health <= 0 then
 orgplr.Humanoid.Health = 0
