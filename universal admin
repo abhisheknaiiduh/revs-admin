@@ -1,6 +1,5 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/jj123llol/My-personal-admin/main/z",true))()
 
-
 --[[
 if you use any of this shit give credits!!!!
 if you use any of this shit give credits!!!!
@@ -18,7 +17,6 @@ if you use any of this shit give credits!!!!
 if you use any of this shit give credits!!!!
 if you use any of this shit give credits!!!!
 --]]
-
 
 --1st open source project is crazy
 
@@ -177,6 +175,9 @@ local cmdslist = {
 "invis",
 "vis",
 "droptools",
+"play (id) (delay)",
+"rocket (plr)",
+"unrocket",
 }
 
 local plugins = {}
@@ -416,6 +417,32 @@ end
 end
 end
 
+if cmd == "rocket" then
+for i,_ in pairs(loopgotoplayer) do
+table.remove(loopgotoplayer,i)
+end
+Who = string.sub(msg, space + 1)
+loopgototarget = getPlayer(Who)[1]
+table.insert(loopgotoplayer,loopgototarget.Name)
+getgenv().lg = rs.Heartbeat:Connect(function()
+for _,v in pairs(loopgotoplayer) do
+if game.Players:FindFirstChild(v) then
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = (game.Players[v].Character:WaitForChild("HumanoidRootPart").CFrame - Vector3.new(0,0.5,0)) * CFrame.Angles(-1.5,0,0)
+end
+end
+end)
+end
+
+if cmd == "unrocket" then
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+getgenv().lg:Disconnect()
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+for i,_ in pairs(loopgotoplayer) do
+table.remove(loopgotoplayer,i)
+end
+end
+
 if cmd == "invis" then
 local UIS,rS,plr = game:GetService("UserInputService"),game:GetService('RunService'),game.Players.LocalPlayer
 getgenv().orgplr = plr.Character
@@ -584,6 +611,7 @@ table.remove(loopgotoplayer,i)
 end
 end
 
+
 if cmd == "lay" then
 game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit = true
 wait(0.2)
@@ -595,6 +623,28 @@ end
 
 if cmd == "sit" then
 game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit = true
+end
+
+if cmd == "play" then
+id = string.split(msg, ' ')[2]
+if string.split(msg, ' ')[3] == nil then delay = nil else delay = string.split(msg, ' ')[3] end
+plr = game.Players.LocalPlayer
+for _,v in pairs(plr.Character:GetChildren()) do
+if v:IsA("Tool") then
+v.Parent = plr.Backpack
+end
+end
+for _,v in pairs(plr.Backpack:GetChildren()) do
+if delay ~= nil then wait(delay) end
+v.GripPos = Vector3.new(0,0,0)
+v.Parent = plr.Character
+local args = {
+    [1] = "PlaySong",
+    [2] = id
+}
+
+v.Remote:FireServer(unpack(args))
+end
 end
 
 if cmd == "loopgoto" then
@@ -1137,6 +1187,55 @@ tool.Parent = game.Players.LocalPlayer.Character
 wait(0.2)
 tool.Parent = workspace
 end
+end
+end
+
+if cmd == "play" then
+id = args[2]
+if args[3] == nil then delay = nil else delay = args[3] end
+plr = game.Players.LocalPlayer
+for _,v in pairs(plr.Character:GetChildren()) do
+if v:IsA("Tool") then
+v.Parent = plr.Backpack
+end
+end
+for _,v in pairs(plr.Backpack:GetChildren()) do
+if delay ~= nil then wait(delay) end
+v.GripPos = Vector3.new(0,0,0)
+v.Parent = plr.Character
+local args = {
+    [1] = "PlaySong",
+    [2] = id
+}
+
+v.Remote:FireServer(unpack(args))
+end
+end
+
+
+if cmd == "rocket" then
+for i,_ in pairs(loopgotoplayer) do
+table.remove(loopgotoplayer,i)
+end
+Who = args[2]
+loopgototarget = getPlayer(Who)[1]
+table.insert(loopgotoplayer,loopgototarget.Name)
+getgenv().lg = rs.Heartbeat:Connect(function()
+for _,v in pairs(loopgotoplayer) do
+if game.Players:FindFirstChild(v) then
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = (game.Players[v].Character:WaitForChild("HumanoidRootPart").CFrame - Vector3.new(0,0.5,0)) * CFrame.Angles(-1.5,0,0)
+end
+end
+end)
+end
+
+if cmd == "unrocket" then
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+getgenv().lg:Disconnect()
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+for i,_ in pairs(loopgotoplayer) do
+table.remove(loopgotoplayer,i)
 end
 end
 
