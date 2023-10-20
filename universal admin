@@ -24,6 +24,67 @@ if getgenv().executed == true then warn("\nadmin is already running\nadmin is al
 
 getgenv().executed = true
 
+
+local admin = {
+rt = {},
+fc = {}
+}
+
+admin.fc.PlayerAdded = function(play)
+admin.rt[play] = tick()
+
+play.CharacterAdded:Connect(function()
+admin.rt[play] = tick()
+end)
+end
+
+admin.fc.PlayerRemoved = function(play)
+if admin.rt[play] then
+admin.rt[play] = nil
+end
+end
+
+game:GetService("Players").PlayerAdded:Connect(admin.fc.PlayerAdded)
+
+for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+admin.fc.PlayerAdded(v)
+end
+
+local CommandEvents = {
+    ["AntiFling"] = {
+        ["Events"] = {
+            ["PlayerAdded"] = nil,
+            ["CharacterAdded"] = {},
+            ["ChildAdded"] = {},
+            ["Constraints"] = {}
+        }
+    },
+}
+
+admin.fc.MakeCollisionConstraints = function(FlingPart)
+CommandEvents.AntiFling.Events.Constraints[FlingPart] = {}
+
+for _, Object in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+if Object:IsA("BasePart") then
+local NoCollisionConstraint = Instance.new("NoCollisionConstraint")
+
+NoCollisionConstraint.Part0 = Object
+NoCollisionConstraint.Part1 = FlingPart
+            
+table.insert(CommandEvents.AntiFling.Events.Constraints[FlingPart], NoCollisionConstraint)
+
+NoCollisionConstraint.Enabled = true
+NoCollisionConstraint.Parent = Object
+end
+end
+end
+
+admin.fc.AddFling = function(Part)
+if Part:IsA("BasePart") and not CommandEvents.AntiFling.Events.Constraints[Part] then
+admin.fc.MakeCollisionConstraints(Part)
+end
+end
+
 if game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("ChatScript",true) then
 local ChatMain = require(game:GetService("Players").LocalPlayer.PlayerScripts.ChatScript.ChatMain)
 local function bypass()
@@ -176,8 +237,12 @@ local cmdslist = {
 "vis",
 "droptools",
 "play (id) (delay)",
+"antifling",
+"unantifling",
 "rocket (plr)",
 "unrocket",
+"rocket2 (plr)",
+"unrocket2",
 }
 
 local plugins = {}
@@ -405,7 +470,6 @@ loadstring(readfile("Revs admin/Plugins/"..v..".lua"))()
 end
 end
 
-
 if cmd == "droptools" then
 for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
 if tool.CanBeDropped == true then
@@ -415,6 +479,51 @@ tool.Parent = workspace
 end
 end
 end
+end
+
+if cmd == "antifling" then
+CommandEvents.AntiFling.Events.PlayerAdded = game.Players.PlayerAdded:Connect(function(Player)
+table.insert(CommandEvents.AntiFling.Events.CharacterAdded, Player.CharacterAdded:Connect(function(Character)
+table.insert(CommandEvents.AntiFling.Events.ChildAdded, Character.ChildAdded:Connect(admin.fc.AddFling))
+for _, Object in pairs(Player.Character:GetDescendants()) do
+admin.fc.AddFling(Object)
+end
+end))
+for _, Object in pairs(Player.Character:GetDescendants()) do
+admin.fc.AddFling(Object)
+end
+end)
+for _, Player in pairs(game.Players:GetPlayers()) do
+if Player ~= game.Players.LocalPlayer then
+table.insert(CommandEvents.AntiFling.Events.CharacterAdded, Player.CharacterAdded:Connect(function(Character)
+table.insert(CommandEvents.AntiFling.Events.ChildAdded, Player.Character.ChildAdded:Connect(admin.fc.AddFling))
+for _, Object in pairs(Player.Character:GetDescendants()) do
+admin.fc.AddFling(Object)
+ end
+end))
+for _, Object in pairs(Player.Character:GetDescendants()) do
+admin.fc.AddFling(Object)
+end
+end
+end
+end
+
+if cmd == "unantifling" then
+if CommandEvents.AntiFling.Events.PlayerAdded then
+CommandEvents.AntiFling.Events.PlayerAdded:Disconnect()
+end
+for _, Event in pairs(CommandEvents.AntiFling.Events.CharacterAdded) do
+Event:Disconnect()
+end
+for _, Event in pairs(CommandEvents.AntiFling.Events.ChildAdded) do
+Event:Disconnect()
+end
+for _, FPart in pairs(CommandEvents.AntiFling.Events.Constraints) do
+for _, Constraint in pairs(FPart) do
+Constraint:Destroy()
+end
+end
+CommandEvents.AntiFling.Events.Constraints = {}
 end
 
 if cmd == "rocket" then
@@ -441,6 +550,46 @@ game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = V
 for i,_ in pairs(loopgotoplayer) do
 table.remove(loopgotoplayer,i)
 end
+end
+
+
+if cmd == "rocket2" then
+getgenv().rcktpos = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame
+game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit = true
+wait(0.2)
+for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
+v:Stop()
+end
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.Angles(-1.5,0,0) 
+Who = string.sub(msg, space + 1)
+rocket = getPlayer(Who)[1]
+tweenService, tweenInfo = game:GetService("TweenService"), TweenInfo.new(5, Enum.EasingStyle.Linear)
+getgenv().tween = tweenService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart, tweenInfo, {CFrame = rocket.Character.HumanoidRootPart.CFrame + Vector3.new(0,999,0)})
+tween:Play()
+getgenv().rckt = rs.Heartbeat:Connect(function()
+game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
+if(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Y - rocket.Character.HumanoidRootPart.CFrame.Y) > 15 then
+tween:Cancel()
+game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit = true
+wait(0.2)
+for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
+v:Stop()
+end
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = (rocket.Character.HumanoidRootPart.CFrame - Vector3.new(0,3.5,0)) * CFrame.Angles(-1.5,0,0) 
+tweenInfo = TweenInfo.new(8500, Enum.EasingStyle.Linear)
+getgenv().tween = tweenService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart, tweenInfo, {CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0,99999,0)})
+tween:Play()
+end
+end)
+end
+
+if cmd == "unrocket2" then
+if rckt then rckt:Disconnect() end
+wait(1)
+tween:Cancel()
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = rcktpos
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
 end
 
 if cmd == "invis" then
@@ -1237,6 +1386,90 @@ game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = V
 for i,_ in pairs(loopgotoplayer) do
 table.remove(loopgotoplayer,i)
 end
+end
+
+if cmd == "rocket2" then
+getgenv().rcktpos = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame
+game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit = true
+wait(0.2)
+for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
+v:Stop()
+end
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.Angles(-1.5,0,0) 
+Who = args[2]
+rocket = getPlayer(Who)[1]
+tweenService, tweenInfo = game:GetService("TweenService"), TweenInfo.new(5, Enum.EasingStyle.Linear)
+getgenv().tween = tweenService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart, tweenInfo, {CFrame = rocket.Character.HumanoidRootPart.CFrame + Vector3.new(0,999,0)})
+tween:Play()
+getgenv().rckt = rs.Heartbeat:Connect(function()
+game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
+if(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Y - rocket.Character.HumanoidRootPart.CFrame.Y) > 15 then
+tween:Cancel()
+game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit = true
+wait(0.2)
+for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
+v:Stop()
+end
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = (rocket.Character.HumanoidRootPart.CFrame - Vector3.new(0,3.5,0)) * CFrame.Angles(-1.5,0,0) 
+tweenInfo = TweenInfo.new(8500, Enum.EasingStyle.Linear)
+getgenv().tween = tweenService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart, tweenInfo, {CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0,99999,0)})
+tween:Play()
+end
+end)
+end
+
+if cmd == "unrocket2" then
+if rckt then rckt:Disconnect() end
+wait(1)
+tween:Cancel()
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = rcktpos
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+end
+
+if cmd == "antifling" then
+CommandEvents.AntiFling.Events.PlayerAdded = game.Players.PlayerAdded:Connect(function(Player)
+table.insert(CommandEvents.AntiFling.Events.CharacterAdded, Player.CharacterAdded:Connect(function(Character)
+table.insert(CommandEvents.AntiFling.Events.ChildAdded, Character.ChildAdded:Connect(admin.fc.AddFling))
+for _, Object in pairs(Player.Character:GetDescendants()) do
+admin.fc.AddFling(Object)
+end
+end))
+for _, Object in pairs(Player.Character:GetDescendants()) do
+admin.fc.AddFling(Object)
+end
+end)
+for _, Player in pairs(game.Players:GetPlayers()) do
+if Player ~= game.Players.LocalPlayer then
+table.insert(CommandEvents.AntiFling.Events.CharacterAdded, Player.CharacterAdded:Connect(function(Character)
+table.insert(CommandEvents.AntiFling.Events.ChildAdded, Player.Character.ChildAdded:Connect(admin.fc.AddFling))
+for _, Object in pairs(Player.Character:GetDescendants()) do
+admin.fc.AddFling(Object)
+ end
+end))
+for _, Object in pairs(Player.Character:GetDescendants()) do
+admin.fc.AddFling(Object)
+end
+end
+end
+end
+
+if cmd == "unantifling" then
+if CommandEvents.AntiFling.Events.PlayerAdded then
+CommandEvents.AntiFling.Events.PlayerAdded:Disconnect()
+end
+for _, Event in pairs(CommandEvents.AntiFling.Events.CharacterAdded) do
+Event:Disconnect()
+end
+for _, Event in pairs(CommandEvents.AntiFling.Events.ChildAdded) do
+Event:Disconnect()
+end
+for _, FPart in pairs(CommandEvents.AntiFling.Events.Constraints) do
+for _, Constraint in pairs(FPart) do
+Constraint:Destroy()
+end
+end
+CommandEvents.AntiFling.Events.Constraints = {}
 end
 
 end
