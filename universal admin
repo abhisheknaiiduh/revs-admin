@@ -475,10 +475,8 @@ else
 loadstring(readfile("Revs admin/Plugins/"..v..".lua"))()
 end
 end
-
-if cmd == "idfkwhyihavetoaddthis" then
-print("z")
 end
+
 
 if cmd == "droptools" then
 for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
@@ -486,7 +484,6 @@ if tool.CanBeDropped == true then
 tool.Parent = game.Players.LocalPlayer.Character
 wait(0.2)
 tool.Parent = workspace
-end
 end
 end
 end
