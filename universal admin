@@ -79,6 +79,15 @@ game.TextChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(msg)
 end
 end
 
+function resetcmd()
+orgin = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+task.spawn(function()
+game.Players.LocalPlayer.Character.Humanoid.Health = 0; wait(0.1); game.Players.LocalPlayer.Character:Destroy() ;game.Players.LocalPlayer.Character = nil; repeat wait() until game.Players.LocalPlayer.Character ~= nil
+wait(0.5)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = orgin
+end)
+end
+
 local pickUpLines = {
 "Are you a magician? Because whenever I look at you, everyone else disappears.",
 "Do you have a map? I keep getting lost in your eyes.",
@@ -204,6 +213,23 @@ end
 end)
 end
 
+function waitforstop2()
+task.spawn(function()
+while tflingrunning2 == true do
+wait()
+repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90
+if fling then fling:Disconnect()
+char = game.Players.LocalPlayer.Character
+stopped = tick()
+notify("Fling","Stopping...",3)
+repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(-5,-5,-5); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until (tick() - stopped > 5)
+unequip()
+tflingrunning2 = false
+end
+end
+end)
+end
+
 local date = os.date
 local strdate = tostring(date("%m %d"))
 if strdate == "10 31" then notify("🎃Rev's Admin🎃","Loading..!",10)
@@ -251,6 +277,8 @@ local cmdslist = {
 "tfling (plr)",
 "untfling",
 "heldtfling",
+"re",
+"fling (plr)",
 }
 
 local plugins = {}
@@ -479,6 +507,9 @@ end
 end
 end
 
+if cmd == "reset" or cmd == "re" or cmd == "respawn" then
+resetcmd()
+end
 
 if cmd == "droptools" then
 for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
@@ -535,29 +566,31 @@ end
 CommandEvents.AntiFling.Events.Constraints = {}
 end
 
+if cmd == "fling" then
+Who = string.sub(msg, space + 1)
+getgenv().ftarget = getPlayer(Who)[1]
+char = game.Players.LocalPlayer.Character
+getgenv().orgcframe = char.HumanoidRootPart.CFrame
+tflingrunning2 = true
+waitforstop2()
+getgenv().fling = rs.Heartbeat:Connect(function()
+char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(5e3,5e3,5e3)
+char:WaitForChild("HumanoidRootPart").CFrame = ((ftarget.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,0.1,0) + ftarget.Character:WaitForChild("Humanoid").MoveDirection * 0.5) * CFrame.Angles(0,30,0))
+end)
+end
+
+
 if cmd == "tfling" then
 Who = string.sub(msg, space + 1)
 getgenv().ftarget = getPlayer(Who)[1]
 backpack = game.Players.LocalPlayer.Backpack
 char = game.Players.LocalPlayer.Character
-
 getgenv().orgcframe = char.HumanoidRootPart.CFrame
-
-char.HumanoidRootPart.Anchored = true
-wait(0.5)
-
-game.Players:Chat("/e laugh")
-local start = tick()
-
-for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
-if v.Name == "laugh" then
 local tool = backpack:GetChildren()[1]
 local orgpos = tool.GripPos
 tool.GripPos = Vector3.new(0,9e3,0)
 tool.Parent = char
-print(v.Length)
-repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.Length
-char.HumanoidRootPart.Anchored = false
+wait(0)
 tool.GripPos = orgpos
 tflingrunning = true
 waitforstop()
@@ -565,9 +598,6 @@ getgenv().tfling = rs.Heartbeat:Connect(function()
 char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
 char:WaitForChild("HumanoidRootPart").CFrame = ((ftarget.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,0.1,0) + ftarget.Character:WaitForChild("Humanoid").MoveDirection * 0.5) * CFrame.Angles(0,30,0))
 end)
-break
-end
-end
 end
 
 if cmd == "untfling" then
@@ -582,20 +612,12 @@ end
 if cmd == "freetfling" or cmd == "heldtfling" then
 backpack = game.Players.LocalPlayer.Backpack
 char = game.Players.LocalPlayer.Character
-game.Players:Chat("/e laugh")
-local start = tick()
-
-for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
-if v.Name == "laugh" then
 local tool = backpack:GetChildren()[1]
 local orgpos = tool.GripPos
 tool.GripPos = Vector3.new(0,9e3,0)
 tool.Parent = char
-print(v.Length)
-repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.Length
+wait(0)
 tool.GripPos = orgpos
-end
-end
 end
 
 if cmd == "rocket" then
@@ -1550,24 +1572,12 @@ Who = args[2]
 getgenv().ftarget = getPlayer(Who)[1]
 backpack = game.Players.LocalPlayer.Backpack
 char = game.Players.LocalPlayer.Character
-
 getgenv().orgcframe = char.HumanoidRootPart.CFrame
-
-char.HumanoidRootPart.Anchored = true
-wait(0.5)
-
-game.Players:Chat("/e laugh")
-local start = tick()
-
-for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
-if v.Name == "laugh" then
 local tool = backpack:GetChildren()[1]
 local orgpos = tool.GripPos
 tool.GripPos = Vector3.new(0,9e3,0)
 tool.Parent = char
-print(v.Length)
-repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.Length
-char.HumanoidRootPart.Anchored = false
+wait(0)
 tool.GripPos = orgpos
 tflingrunning = true
 waitforstop()
@@ -1575,9 +1585,6 @@ getgenv().tfling = rs.Heartbeat:Connect(function()
 char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
 char:WaitForChild("HumanoidRootPart").CFrame = ((ftarget.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,0.1,0) + ftarget.Character:WaitForChild("Humanoid").MoveDirection * 0.5) * CFrame.Angles(0,30,0))
 end)
-break
-end
-end
 end
 
 if cmd == "untfling" then
@@ -1592,20 +1599,12 @@ end
 if cmd == "freetfling" or cmd == "heldtfling" then
 backpack = game.Players.LocalPlayer.Backpack
 char = game.Players.LocalPlayer.Character
-game.Players:Chat("/e laugh")
-local start = tick()
-
-for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
-if v.Name == "laugh" then
 local tool = backpack:GetChildren()[1]
 local orgpos = tool.GripPos
 tool.GripPos = Vector3.new(0,9e3,0)
 tool.Parent = char
-print(v.Length)
-repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.Length
+wait(0)
 tool.GripPos = orgpos
-end
-end
 end
 
 if cmd == "spamcon" then --hidden commad 😱, you need a boombox for it.
@@ -1649,6 +1648,23 @@ end
 
 if cmd == "unspamcon" then
 getgenv().spam = false
+end
+
+if cmd == "reset" or cmd == "re" or cmd == "respawn" then
+resetcmd()
+end
+
+if cmd == "fling" then
+Who = args[2]
+getgenv().ftarget = getPlayer(Who)[1]
+char = game.Players.LocalPlayer.Character
+getgenv().orgcframe = char.HumanoidRootPart.CFrame
+tflingrunning2 = true
+waitforstop2()
+getgenv().fling = rs.Heartbeat:Connect(function()
+char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(5e3,5e3,5e3)
+char:WaitForChild("HumanoidRootPart").CFrame = ((ftarget.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,0.1,0) + ftarget.Character:WaitForChild("Humanoid").MoveDirection * 0.5) * CFrame.Angles(0,30,0))
+end)
 end
 
 end
