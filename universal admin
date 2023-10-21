@@ -24,31 +24,34 @@ if getgenv().executed == true then warn("\nadmin is already running\nadmin is al
 
 getgenv().executed = true
 
+function unequip()
+for _,v in pairs(char:GetChildren()) do
+if v:IsA("Tool") then
+v.Parent = game.Players.LocalPlayer.Backpack
+end
+end
+end
 
-local admin = {
-rt = {},
-fc = {}
-}
-
-admin.fc.PlayerAdded = function(play)
-admin.rt[play] = tick()
-
-play.CharacterAdded:Connect(function()
-admin.rt[play] = tick()
+function waitforstop()
+task.spawn(function()
+while tflingrunning == true do
+wait()
+repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90
+if tfling then tfling:Disconnect()
+char = game.Players.LocalPlayer.Character
+char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+char:WaitForChild("HumanoidRootPart").CFrame = orgcframe
+char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+unequip()
+tflingrunning = false
+end
+end
 end)
 end
 
-admin.fc.PlayerRemoved = function(play)
-if admin.rt[play] then
-admin.rt[play] = nil
-end
-end
-
-game:GetService("Players").PlayerAdded:Connect(admin.fc.PlayerAdded)
-
-for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-admin.fc.PlayerAdded(v)
-end
+local admin = {
+fc = {}
+}
 
 local CommandEvents = {
     ["AntiFling"] = {
@@ -243,6 +246,9 @@ local cmdslist = {
 "unrocket",
 "rocket2 (plr)",
 "unrocket2",
+"tfling (plr)",
+"untfling",
+"heldtfling",
 }
 
 local plugins = {}
@@ -470,6 +476,10 @@ loadstring(readfile("Revs admin/Plugins/"..v..".lua"))()
 end
 end
 
+if cmd == "idfkwhyihavetoaddthis" then
+print("z")
+end
+
 if cmd == "droptools" then
 for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
 if tool.CanBeDropped == true then
@@ -526,6 +536,67 @@ end
 CommandEvents.AntiFling.Events.Constraints = {}
 end
 
+if cmd == "tfling" then
+Who = string.sub(msg, space + 1)
+getgenv().ftarget = getPlayer(Who)[1]
+backpack = game.Players.LocalPlayer.Backpack
+char = game.Players.LocalPlayer.Character
+
+getgenv().orgcframe = char.HumanoidRootPart.CFrame
+
+char.HumanoidRootPart.Anchored = true
+wait(0.5)
+
+game.Players:Chat("/e laugh")
+local start = tick()
+
+for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
+if v.Name == "laugh" then
+local tool = backpack:GetChildren()[1]
+local orgpos = tool.GripPos
+tool.GripPos = Vector3.new(0,9e3,0)
+tool.Parent = char
+print(v.Length)
+repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.Length
+char.HumanoidRootPart.Anchored = false
+tool.GripPos = orgpos
+tflingrunning = true
+waitforstop()
+getgenv().tfling = rs.Heartbeat:Connect(function()
+char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+char:WaitForChild("HumanoidRootPart").CFrame = ((ftarget.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,0.1,0) + ftarget.Character:WaitForChild("Humanoid").MoveDirection * 0.5) * CFrame.Angles(0,30,0))
+end)
+break
+end
+end
+end
+
+if cmd == "untfling" then
+if tfling then tfling:Disconnect() end
+char = game.Players.LocalPlayer.Character
+repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until char:WaitForChild("HumanoidRootPart").Velocity == Vector3.new(0,0,0)
+unequip()
+end
+
+if cmd == "freetfling" or cmd == "heldtfling" then
+backpack = game.Players.LocalPlayer.Backpack
+char = game.Players.LocalPlayer.Character
+game.Players:Chat("/e laugh")
+local start = tick()
+
+for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
+if v.Name == "laugh" then
+local tool = backpack:GetChildren()[1]
+local orgpos = tool.GripPos
+tool.GripPos = Vector3.new(0,9e3,0)
+tool.Parent = char
+print(v.Length)
+repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.Length
+tool.GripPos = orgpos
+end
+end
+end
+
 if cmd == "rocket" then
 for i,_ in pairs(loopgotoplayer) do
 table.remove(loopgotoplayer,i)
@@ -551,6 +622,7 @@ for i,_ in pairs(loopgotoplayer) do
 table.remove(loopgotoplayer,i)
 end
 end
+
 
 
 if cmd == "rocket2" then
@@ -1470,6 +1542,67 @@ Constraint:Destroy()
 end
 end
 CommandEvents.AntiFling.Events.Constraints = {}
+end
+
+if cmd == "tfling" then
+Who = args[2]
+getgenv().ftarget = getPlayer(Who)[1]
+backpack = game.Players.LocalPlayer.Backpack
+char = game.Players.LocalPlayer.Character
+
+getgenv().orgcframe = char.HumanoidRootPart.CFrame
+
+char.HumanoidRootPart.Anchored = true
+wait(0.5)
+
+game.Players:Chat("/e laugh")
+local start = tick()
+
+for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
+if v.Name == "laugh" then
+local tool = backpack:GetChildren()[1]
+local orgpos = tool.GripPos
+tool.GripPos = Vector3.new(0,9e3,0)
+tool.Parent = char
+print(v.Length)
+repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.Length
+char.HumanoidRootPart.Anchored = false
+tool.GripPos = orgpos
+tflingrunning = true
+waitforstop()
+getgenv().tfling = rs.Heartbeat:Connect(function()
+char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+char:WaitForChild("HumanoidRootPart").CFrame = ((ftarget.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,0.1,0) + ftarget.Character:WaitForChild("Humanoid").MoveDirection * 0.5) * CFrame.Angles(0,30,0))
+end)
+break
+end
+end
+end
+
+if cmd == "untfling" then
+if tfling then tfling:Disconnect() end
+char = game.Players.LocalPlayer.Character
+repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until char:WaitForChild("HumanoidRootPart").Velocity == Vector3.new(0,0,0)
+unequip()
+end
+
+if cmd == "freetfling" or cmd == "heldtfling" then
+backpack = game.Players.LocalPlayer.Backpack
+char = game.Players.LocalPlayer.Character
+game.Players:Chat("/e laugh")
+local start = tick()
+
+for _,v in pairs(game.Players.LocalPlayer.Character.Humanoid.Animator:GetPlayingAnimationTracks()) do
+if v.Name == "laugh" then
+local tool = backpack:GetChildren()[1]
+local orgpos = tool.GripPos
+tool.GripPos = Vector3.new(0,9e3,0)
+tool.Parent = char
+print(v.Length)
+repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.Length
+tool.GripPos = orgpos
+end
+end
 end
 
 end
