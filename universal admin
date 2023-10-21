@@ -39,9 +39,7 @@ wait()
 repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90
 if tfling then tfling:Disconnect()
 char = game.Players.LocalPlayer.Character
-char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
-char:WaitForChild("HumanoidRootPart").CFrame = orgcframe
-char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0)
+repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until char:WaitForChild("HumanoidRootPart").Velocity == Vector3.new(0,0,0)
 unequip()
 tflingrunning = false
 end
@@ -1600,6 +1598,61 @@ repeat wait() print("time ="..(tick() - start).."") until (tick() - start) > v.L
 tool.GripPos = orgpos
 end
 end
+end
+
+if cmd == "print" then
+message = ""
+for i,_ in args do
+if args[i] ~= args[1] then
+message = ""..message.." "..args[i]..""
+end
+end
+print(message)
+end
+
+
+
+if cmd == "spamcon" then --hidden commad 😱, you need a boombox for it.
+message = ""
+for i,_ in args do
+if args[i] ~= args[1] then
+message = ""..message.." "..args[i]..""
+end
+end
+local delay = 1
+
+getgenv().spam = true
+
+plr = game.Players.LocalPlayer
+
+while getgenv().spam == true do
+wait()
+
+for _,v in pairs(plr.Character:GetChildren()) do
+if v:IsA("Tool") then
+v.Parent = plr.Backpack
+end
+end
+
+for _,v in pairs(plr.Backpack:GetChildren()) do
+if v.Name == "BoomBox" then
+if delay ~= nil then wait(delay) end
+v.GripPos = Vector3.new(0,0,0)
+v.Parent = plr.Character
+local args = {
+    [1] = "PlaySong",
+    [2] = "\n\n\n\n"..message.."\n\n\n\n"
+}
+
+v.Remote:FireServer(unpack(args))
+break
+end
+end
+end
+end
+
+if cmd == "unspamcon" then
+getgenv().spam = false
 end
 
 end
