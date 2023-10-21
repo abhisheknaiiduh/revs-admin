@@ -24,29 +24,6 @@ if getgenv().executed == true then warn("\nadmin is already running\nadmin is al
 
 getgenv().executed = true
 
-function unequip()
-for _,v in pairs(char:GetChildren()) do
-if v:IsA("Tool") then
-v.Parent = game.Players.LocalPlayer.Backpack
-end
-end
-end
-
-function waitforstop()
-task.spawn(function()
-while tflingrunning == true do
-wait()
-repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90
-if tfling then tfling:Disconnect()
-char = game.Players.LocalPlayer.Character
-repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until char:WaitForChild("HumanoidRootPart").Velocity == Vector3.new(0,0,0)
-unequip()
-tflingrunning = false
-end
-end
-end)
-end
-
 local admin = {
 fc = {}
 }
@@ -142,7 +119,8 @@ local pickUpLines = {
 }
 
 function notify(title,Warn,time)
-if game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("Noti") then game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("Noti"):Destroy() end
+task.spawn(function()
+if game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("noti") then game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("noti"):Destroy() end
 local noti = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
@@ -198,6 +176,32 @@ twe = game.TweenService:Create(Frame,TweenInfo.new(0.25),{Position = UDim2.new(1
 twe:Play()
 twe.Completed:Wait(0.5)
 Frame:Destroy()
+end)
+end
+
+function unequip()
+for _,v in pairs(char:GetChildren()) do
+if v:IsA("Tool") then
+v.Parent = game.Players.LocalPlayer.Backpack
+end
+end
+end
+
+function waitforstop()
+task.spawn(function()
+while tflingrunning == true do
+wait()
+repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90
+if tfling then tfling:Disconnect()
+char = game.Players.LocalPlayer.Character
+stopped = tick()
+notify("TFling","Stopping...",3)
+repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until (tick() - stopped > 2)
+unequip()
+tflingrunning = false
+end
+end
+end)
 end
 
 local date = os.date
@@ -569,7 +573,9 @@ end
 if cmd == "untfling" then
 if tfling then tfling:Disconnect() end
 char = game.Players.LocalPlayer.Character
-repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until char:WaitForChild("HumanoidRootPart").Velocity == Vector3.new(0,0,0)
+stopped = tick()
+notify("TFling","Stopping...",3)
+repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until (tick() - stopped > 2)
 unequip()
 end
 
@@ -1577,7 +1583,9 @@ end
 if cmd == "untfling" then
 if tfling then tfling:Disconnect() end
 char = game.Players.LocalPlayer.Character
-repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until char:WaitForChild("HumanoidRootPart").Velocity == Vector3.new(0,0,0)
+stopped = tick()
+notify("TFling","Stopping...",3)
+repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0,0,0); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until (tick() - stopped > 2)
 unequip()
 end
 
@@ -1599,18 +1607,6 @@ tool.GripPos = orgpos
 end
 end
 end
-
-if cmd == "print" then
-message = ""
-for i,_ in args do
-if args[i] ~= args[1] then
-message = ""..message.." "..args[i]..""
-end
-end
-print(message)
-end
-
-
 
 if cmd == "spamcon" then --hidden commad 😱, you need a boombox for it.
 message = ""
