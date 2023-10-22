@@ -83,8 +83,7 @@ function resetcmd()
 orgin = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
 task.spawn(function()
 game.Players.LocalPlayer.Character.Humanoid.Health = 0; wait(0.1); game.Players.LocalPlayer.Character:Destroy() ;game.Players.LocalPlayer.Character = nil; repeat wait() until game.Players.LocalPlayer.Character ~= nil
-wait(0.5)
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = orgin
+game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = orgin
 end)
 end
 
@@ -200,7 +199,7 @@ function waitforstop()
 task.spawn(function()
 while tflingrunning == true do
 wait()
-repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90
+repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90 or ftarget == nil
 if tfling then tfling:Disconnect()
 char = game.Players.LocalPlayer.Character
 stopped = tick()
@@ -217,11 +216,11 @@ function waitforstop2()
 task.spawn(function()
 while tflingrunning2 == true do
 wait()
-repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90
+repeat wait(); until ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.X > 90 or ftarget.Character:WaitForChild("HumanoidRootPart").Velocity.Z > 90 or ftarget == nil
 if fling then fling:Disconnect()
 char = game.Players.LocalPlayer.Character
 stopped = tick()
-notify("Fling","Stopping...",3)
+notify("Fling","Stopping...",5)
 repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(-5,-5,-5); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until (tick() - stopped > 5)
 unequip()
 tflingrunning2 = false
@@ -279,6 +278,8 @@ local cmdslist = {
 "heldtfling",
 "re",
 "fling (plr)",
+"spin (num)",
+"unspin",
 }
 
 local plugins = {}
@@ -505,6 +506,20 @@ else
 loadstring(readfile("Revs admin/Plugins/"..v..".lua"))()
 end
 end
+end
+
+if cmd == "spin" then
+if spin then spin:Disconnect() end
+local speed = string.sub(msg, space + 1)
+getgenv().spin = true
+hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+getgenv().spin = rs.Heartbeat:Connect(function()
+hrp.CFrame = hrp.CFrame * CFrame.Angles(0,speed,0)
+end)
+end
+
+if cmd == "unspin" then
+if spin then spin:Disconnect() end
 end
 
 if cmd == "reset" or cmd == "re" or cmd == "respawn" then
@@ -1666,6 +1681,21 @@ char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(5e3,5e3,5e3)
 char:WaitForChild("HumanoidRootPart").CFrame = ((ftarget.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,0.1,0) + ftarget.Character:WaitForChild("Humanoid").MoveDirection * 0.5) * CFrame.Angles(0,30,0))
 end)
 end
+
+if cmd == "spin" then
+if spin then spin:Disconnect() end
+local speed = args[2]
+getgenv().spin = true
+hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+getgenv().spin = rs.Heartbeat:Connect(function()
+hrp.CFrame = hrp.CFrame * CFrame.Angles(0,speed,0)
+end)
+end
+
+if cmd == "unspin" then
+if spin then spin:Disconnect() end
+end
+
 
 end
 end)
