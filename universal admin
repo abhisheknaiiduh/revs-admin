@@ -29,14 +29,14 @@ fc = {}
 }
 
 local CommandEvents = {
-    ["AntiFling"] = {
-        ["Events"] = {
-            ["PlayerAdded"] = nil,
-            ["CharacterAdded"] = {},
-            ["ChildAdded"] = {},
-            ["Constraints"] = {}
-        }
-    },
+["AntiFling"] = {
+["Events"] = {
+["PlayerAdded"] = nil,
+["CharacterAdded"] = {},
+["ChildAdded"] = {},
+["Constraints"] = {}
+}
+},
 }
 
 admin.fc.MakeCollisionConstraints = function(FlingPart)
