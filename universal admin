@@ -222,7 +222,6 @@ char = game.Players.LocalPlayer.Character
 stopped = tick()
 notify("Fling","Stopping...",5)
 repeat wait(); char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(-5,-5,-5); char:WaitForChild("HumanoidRootPart").CFrame = orgcframe until (tick() - stopped > 5)
-unequip()
 tflingrunning2 = false
 end
 end
@@ -280,6 +279,7 @@ local cmdslist = {
 "fling (plr)",
 "spin (num)",
 "unspin",
+"msglogger",
 }
 
 local plugins = {}
@@ -508,6 +508,119 @@ end
 end
 end
 
+if cmd == "msglogger" then
+if chatlogger then chatlogger:Disconnect() end
+if game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("ChatLogger") then game.Players.LocalPlayer:FindFirstChild("PlayerGui"):FindFirstChild("ChatLogger"):Destroy() end
+local sg = Instance.new('ScreenGui',game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+local ChatGui = Instance.new("Frame",sg)
+local Close = Instance.new("ImageButton",ChatGui)
+local CloseCorner = Instance.new("UICorner",Close)
+local SexyGuiMainCorner = Instance.new("UICorner",ChatGui)
+local DisplayMessages = Instance.new("ScrollingFrame",ChatGui)
+local DisplayMessageLayout = Instance.new("UIListLayout",DisplayMessages)
+local DisplayMessageStub = Instance.new("Frame",DisplayMessages)
+local xbase = 475
+sg.ResetOnSpawn = false
+sg.Name = "ChatLogger"
+ChatGui.Draggable = true
+ChatGui.Selectable = true
+ChatGui.Active = true
+ChatGui.Name = "ChatGui"
+ChatGui.AnchorPoint = Vector2.new(0, 1)
+ChatGui.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+ChatGui.BackgroundTransparency = 0.200
+ChatGui.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ChatGui.BorderSizePixel = 0
+ChatGui.Position = UDim2.new(0.5, 10, 0.5, -10)
+ChatGui.Size = UDim2.new(0, xbase, 0, 250)
+SexyGuiMainCorner.CornerRadius = UDim.new(0, 5)
+SexyGuiMainCorner.Name = "SexyGuiMainCorner"
+DisplayMessages.Name = "DisplayMessages"
+DisplayMessages.Active = true
+DisplayMessages.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DisplayMessages.BackgroundTransparency = 1.000
+DisplayMessages.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DisplayMessages.BorderSizePixel = 0
+DisplayMessages.Position = UDim2.new(0, 5, 0, 0)
+DisplayMessages.Size = UDim2.new(0, xbase-10, 0, 215)
+DisplayMessages.ZIndex = 0
+DisplayMessages.CanvasSize = UDim2.new(0, 0, 0, 0)
+DisplayMessages.ScrollBarThickness = 6
+DisplayMessages.AutomaticCanvasSize = "Y"
+DisplayMessageLayout.Name = "DisplayMessageLayout"
+DisplayMessageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+DisplayMessageLayout.Padding = UDim.new(0, 2)
+DisplayMessageStub.Name = "DisplayMessageStub"
+DisplayMessageStub.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DisplayMessageStub.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DisplayMessageStub.BorderSizePixel = 0
+DisplayMessageStub.LayoutOrder = -9999999
+DisplayMessageStub.Size = UDim2.new(1, 0, 0, 0)
+Close.Name = "Close"
+Close.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+Close.BackgroundTransparency = 0.200
+Close.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Close.BorderSizePixel = 0
+Close.Position = UDim2.new(1, 5, -0, 0)
+Close.Size = UDim2.new(0, 25, 0, 25)
+Close.Image = "http://www.roblox.com/asset/?id=6031094670" or "http://www.roblox.com/asset/?id=6031094680"
+Close.MouseButton1Click:Connect(function()
+sg:Destroy()
+end)
+CloseCorner.CornerRadius = UDim.new(0, 5)
+CloseCorner.Name = "CloseCorner"
+local function system(msg)
+local text = "<font color ='#da8541'>[SCRIPT]</font>: "..msg..""
+local TextMessage = Instance.new("TextLabel",DisplayMessages)
+local TextMessagePadding = Instance.new("UIPadding",TextMessage)
+TextMessage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextMessage.BackgroundTransparency = 1.000
+TextMessage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextMessage.BorderSizePixel = 0
+TextMessage.Size = UDim2.new(1, 0, 0, 25)
+TextMessage.Font = Enum.Font.Gotham
+TextMessage.Text = text
+TextMessage.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextMessage.TextSize = 14.000
+TextMessage.TextWrapped = true
+TextMessage.RichText = true
+TextMessage.TextXAlignment = Enum.TextXAlignment.Left
+TextMessage.TextYAlignment = Enum.TextYAlignment.Top
+TextMessage.AutomaticSize = "Y"
+TextMessagePadding.PaddingLeft = UDim.new(0, 5)
+TextMessagePadding.PaddingTop = UDim.new(0, 5)
+DisplayMessages.CanvasPosition = Vector2.new(0,DisplayMessages.AbsoluteCanvasSize.Y)
+end
+local function creatmsg(txt)
+local TextMessage = Instance.new("TextLabel",DisplayMessages)
+local TextMessagePadding = Instance.new("UIPadding",TextMessage)
+TextMessage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextMessage.BackgroundTransparency = 1.000
+TextMessage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextMessage.BorderSizePixel = 0
+TextMessage.Size = UDim2.new(1, 0, 0, 25)
+TextMessage.Font = Enum.Font.Gotham
+TextMessage.Text = txt
+TextMessage.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextMessage.TextSize = 14.000
+TextMessage.TextWrapped = true
+TextMessage.RichText = true
+TextMessage.TextXAlignment = Enum.TextXAlignment.Left
+TextMessage.TextYAlignment = Enum.TextYAlignment.Top
+TextMessage.AutomaticSize = "Y"
+TextMessagePadding.PaddingLeft = UDim.new(0, 5)
+TextMessagePadding.PaddingTop = UDim.new(0, 5)
+DisplayMessages.CanvasPosition = Vector2.new(0,DisplayMessages.AbsoluteCanvasSize.Y)
+end
+system("GUI by amnoob_ coding by jude_or_rev")
+for _,v in pairs(game.Players:GetPlayers()) do
+getgenv().chatlogger = v.Chatted:Connect(function(msg)
+plr = tostring(v)
+creatmsg(""..plr..": "..msg.."")
+end)
+end
+end
+
 if cmd == "spin" then
 if spin then spin:Disconnect() end
 local speed = string.sub(msg, space + 1)
@@ -731,7 +844,7 @@ notify("Invis Cmd","You are now invis!",5)
 end
 
 if cmd == "vis" then
-if invisrun then invisrun:Disconnect() end
+if invisrun then invisrun:Disconnect() 
 if respawnchecker then respawnchecker:Disconnect() end
 game.Players.LocalPlayer.Character = orgplr
 workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
@@ -739,6 +852,7 @@ game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
 game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
 clone:Destroy()
+end
 end
 
 if cmd == "suck" then
@@ -1429,7 +1543,7 @@ end
 
 
 if cmd == "vis" then
-if invisrun then invisrun:Disconnect() end
+if invisrun then invisrun:Disconnect() 
 if respawnchecker then respawnchecker:Disconnect() end
 game.Players.LocalPlayer.Character = orgplr
 workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
@@ -1437,6 +1551,7 @@ game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame
 game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
 clone:Destroy()
+end
 end
 
 if cmd == "droptools" then
@@ -1694,6 +1809,119 @@ end
 
 if cmd == "unspin" then
 if spin then spin:Disconnect() end
+end
+
+if cmd == "msglogger" then
+if chatlogger then chatlogger:Disconnect() end
+if game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("ChatLogger") then game.Players.LocalPlayer:FindFirstChild("PlayerGui"):FindFirstChild("ChatLogger"):Destroy() end
+local sg = Instance.new('ScreenGui',game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+local ChatGui = Instance.new("Frame",sg)
+local Close = Instance.new("ImageButton",ChatGui)
+local CloseCorner = Instance.new("UICorner",Close)
+local SexyGuiMainCorner = Instance.new("UICorner",ChatGui)
+local DisplayMessages = Instance.new("ScrollingFrame",ChatGui)
+local DisplayMessageLayout = Instance.new("UIListLayout",DisplayMessages)
+local DisplayMessageStub = Instance.new("Frame",DisplayMessages)
+local xbase = 475
+sg.ResetOnSpawn = false
+sg.Name = "ChatLogger"
+ChatGui.Draggable = true
+ChatGui.Selectable = true
+ChatGui.Active = true
+ChatGui.Name = "ChatGui"
+ChatGui.AnchorPoint = Vector2.new(0, 1)
+ChatGui.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+ChatGui.BackgroundTransparency = 0.200
+ChatGui.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ChatGui.BorderSizePixel = 0
+ChatGui.Position = UDim2.new(0.5, 10, 0.5, -10)
+ChatGui.Size = UDim2.new(0, xbase, 0, 250)
+SexyGuiMainCorner.CornerRadius = UDim.new(0, 5)
+SexyGuiMainCorner.Name = "SexyGuiMainCorner"
+DisplayMessages.Name = "DisplayMessages"
+DisplayMessages.Active = true
+DisplayMessages.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DisplayMessages.BackgroundTransparency = 1.000
+DisplayMessages.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DisplayMessages.BorderSizePixel = 0
+DisplayMessages.Position = UDim2.new(0, 5, 0, 0)
+DisplayMessages.Size = UDim2.new(0, xbase-10, 0, 215)
+DisplayMessages.ZIndex = 0
+DisplayMessages.CanvasSize = UDim2.new(0, 0, 0, 0)
+DisplayMessages.ScrollBarThickness = 6
+DisplayMessages.AutomaticCanvasSize = "Y"
+DisplayMessageLayout.Name = "DisplayMessageLayout"
+DisplayMessageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+DisplayMessageLayout.Padding = UDim.new(0, 2)
+DisplayMessageStub.Name = "DisplayMessageStub"
+DisplayMessageStub.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DisplayMessageStub.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DisplayMessageStub.BorderSizePixel = 0
+DisplayMessageStub.LayoutOrder = -9999999
+DisplayMessageStub.Size = UDim2.new(1, 0, 0, 0)
+Close.Name = "Close"
+Close.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+Close.BackgroundTransparency = 0.200
+Close.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Close.BorderSizePixel = 0
+Close.Position = UDim2.new(1, 5, -0, 0)
+Close.Size = UDim2.new(0, 25, 0, 25)
+Close.Image = "http://www.roblox.com/asset/?id=6031094670" or "http://www.roblox.com/asset/?id=6031094680"
+Close.MouseButton1Click:Connect(function()
+sg:Destroy()
+end)
+CloseCorner.CornerRadius = UDim.new(0, 5)
+CloseCorner.Name = "CloseCorner"
+local function system(msg)
+local text = "<font color ='#da8541'>[SCRIPT]</font>: "..msg..""
+local TextMessage = Instance.new("TextLabel",DisplayMessages)
+local TextMessagePadding = Instance.new("UIPadding",TextMessage)
+TextMessage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextMessage.BackgroundTransparency = 1.000
+TextMessage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextMessage.BorderSizePixel = 0
+TextMessage.Size = UDim2.new(1, 0, 0, 25)
+TextMessage.Font = Enum.Font.Gotham
+TextMessage.Text = text
+TextMessage.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextMessage.TextSize = 14.000
+TextMessage.TextWrapped = true
+TextMessage.RichText = true
+TextMessage.TextXAlignment = Enum.TextXAlignment.Left
+TextMessage.TextYAlignment = Enum.TextYAlignment.Top
+TextMessage.AutomaticSize = "Y"
+TextMessagePadding.PaddingLeft = UDim.new(0, 5)
+TextMessagePadding.PaddingTop = UDim.new(0, 5)
+DisplayMessages.CanvasPosition = Vector2.new(0,DisplayMessages.AbsoluteCanvasSize.Y)
+end
+local function creatmsg(txt)
+local TextMessage = Instance.new("TextLabel",DisplayMessages)
+local TextMessagePadding = Instance.new("UIPadding",TextMessage)
+TextMessage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextMessage.BackgroundTransparency = 1.000
+TextMessage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextMessage.BorderSizePixel = 0
+TextMessage.Size = UDim2.new(1, 0, 0, 25)
+TextMessage.Font = Enum.Font.Gotham
+TextMessage.Text = txt
+TextMessage.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextMessage.TextSize = 14.000
+TextMessage.TextWrapped = true
+TextMessage.RichText = true
+TextMessage.TextXAlignment = Enum.TextXAlignment.Left
+TextMessage.TextYAlignment = Enum.TextYAlignment.Top
+TextMessage.AutomaticSize = "Y"
+TextMessagePadding.PaddingLeft = UDim.new(0, 5)
+TextMessagePadding.PaddingTop = UDim.new(0, 5)
+DisplayMessages.CanvasPosition = Vector2.new(0,DisplayMessages.AbsoluteCanvasSize.Y)
+end
+system("GUI by amnoob_ coding by jude_or_rev")
+for _,v in pairs(game.Players:GetPlayers()) do
+getgenv().chatlogger = v.Chatted:Connect(function(msg)
+plr = tostring(v)
+creatmsg(""..plr..": "..msg.."")
+end)
+end
 end
 
 
